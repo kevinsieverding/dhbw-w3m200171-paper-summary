@@ -36,7 +36,7 @@
 % setup acronyms
 \input{preamble/acronyms.tex}
 
-\makenoidxglossaries{}
+% \makenoidxglossaries{}
 
 % setup bibliography
 \addbibresource{assets/bibliography.bib}
@@ -50,9 +50,9 @@
 
 % FRONTMATTER
 
-\maketitle
+% \maketitle
 
-\clearpage
+% \clearpage
 
 % use roman page numerals to number frontmatter pages
 \pagenumbering{Roman}
@@ -70,27 +70,27 @@
 
 \clearpage
 
-\listoffigures
+% \listoffigures
 
-\clearpage
+% \clearpage
 
 % use to change the title of the list of listings
 % \renewcommand{\listoflistingscaption}{Quellcodeverzeichnis}
-\listoflistings
+% \listoflistings
 
-\clearpage
+% \clearpage
 
-\setlist[description]{leftmargin=!, labelwidth=4em}
+% \setlist[description]{leftmargin=!, labelwidth=4em}
 
-\printnoidxglossary[
-    type=\acronymtype,
-    sort=nocase,
-    nogroupskip,
-    nopostdot,
-    nonumberlist
-]
+% \printnoidxglossary[
+%     type=\acronymtype,
+%     sort=nocase,
+%     nogroupskip,
+%     nopostdot,
+%     nonumberlist
+% ]
 
-\setlist[description]{style=standard}
+% \setlist[description]{style=standard}
 
 \newcounter{frontpagecount}
 \addtocounter{frontpagecount}{\value{page}}
