@@ -17,6 +17,7 @@
   ],
   "latex-workshop.latex.autoClean.run": "onBuilt",
   "cSpell.words": [
+    "PINQ"
   ],
   "editor.wordWrap": "bounded",
   "editor.wordWrapColumn": 110,

@@ -1,14 +1,94 @@
 % !TeX root = ../index.tex
 
-\section{Introduction}
+\section{Overview}
 
-\blindtext[2]
-\footcite[]{smith2010wealth}
+The paper \citetitle{mcsherry_privacy_2009} by \citeauthor{mcsherry_privacy_2009} presents the design and implementation of a framework for privacy-preserving data analysis---\gls[]{pinq}.
+Their design provides an SQL-like query language and leverages differential privacy to provide formal guarantees towards the \emph{degree} of privacy that a certain query provides.
+\gls[]{pinq} is implemented as a wrapper around \gls[]{linq}.
+A declarative, SQL-like query language integrated into the C\# programming language.
+\parencite[][]{mcsherry_privacy_2009}
 
-\begin{wrapfigure}{l}{0.4\textwidth}
+\section{Differential Privacy}
+
+Differential privacy forms the theoretical foundation for \gls[]{pinq}.
+It is a new way of thinking about privacy that was first articulated by \cite[]{dwork_differential_2006}.
+
+The idea behind differential privacy is that, instead of providing absolute guarantees about whether information leakage will occur or not, mechanisms may provide the relative guarantee that information leakage is just as likely to occur whether a certain record is present in the data set or not.
+Thereby, differential privacy guarantees an individual that they gain only very little by not participating in a data set with their data. \parencite[]{dwork_differential_2006}
+
+A mechanism fulfills the requirement of differential privacy if it produces very similar outputs for any two data sets A and B if the two data sets are very similar to each other \cite[]{dwork_differential_2006}.
+In other words, the inclusion of a single or a small number of records in a data set has no significant impact on the output of a mechanism that fulfills this requirement.
+Therefore, it makes very little difference whether an individual's data is included within a data set, as long as that individuals's data only makes up a small portion of the overall set.
+
+Such mechanisms feature the parameter $\epsilon$ which can be thought of the degree to which the mechanism leaks information.
+It may also be regarded as the privacy-\enquote{cost} of an operation. 
+High values for $\epsilon$ generally result in more accurate results but also in more information leakage.
+\parencite[]{dwork_differential_2006}
+
+\cite[]{mcsherry_privacy_2009} outlines multiple aggregation differentially-private aggregation mechanisms.
+The simplest of which is the noisy count, which releases the number of records in a data set but adds symmetric exponential noise to the result.
+The intensity of the noise is controlled via $\epsilon$, with higher values meaning less noise.
+Next to \texttt{NoisyCount} their implementation also includes among others \texttt{NoisySum}, \texttt{NoisyAvg}, and \texttt{NoisyMed}.
+
+In addition to the aggregation mechanisms, the paper introduces a range of transformation operations that have a stable (i.e. constant) impact on the privacy implication of a query.
+The transformations offered by \gls[]{pinq} include among others \texttt{Where}, \texttt{Select}, \texttt{GroupBy} and \texttt{Join}.
+For example, \texttt{Where} has a stability of one since the presence (or absence) of a single input record has an impact of at most one output record.
+The traditional notion of the \texttt{Join} as a cartesian product of the input records however, would mean unbounded stability.
+The \gls[]{pinq} implementation of the \texttt{Join} operation therefore first groups the two input data sets by the join keys and then pairs off the groups with identical keys.
+Through this restriction the \gls[]{pinq} \texttt{Join} has a stability of two.
+\parencite[]{mcsherry_privacy_2009}
+
+\section{Implementation}
+
+\gls[]{pinq} implements these operations by wrapping the \gls[]{linq} query language which is integrated into the C\# programming language.
+\gls[]{linq} provides the \texttt{IQueryable<T>} type which offers operations such as \texttt{Where}, \texttt{Select}, \texttt{GroupBy}, et cetera.
+\gls[]{pinq} provides a new type \texttt{PINQueryable<T>} that offers differentially-private operations.
+The execution of these operations is not implemented by \gls[]{pinq} instead it wraps around \texttt{IQueryable<T>} and renders every operation to a \gls[]{linq} query while ensuring the necessary operations to conform to the requirements of differential privacy.
+Deferring the execution to \gls[]{linq} makes \gls[]{pinq} pretty lightweight---coming in at under 1000 lines of code.
+\parencite{mcsherry_privacy_2009}
+
+\texttt{PINQueryable} instances consist of an \texttt{IQueryable} and a \texttt{PINQAgent}.
+The latter is a new data type also introduced by the framework.
+Aggregations performed via \texttt{PINQueryable} produce a usable result (such as a sum or count) but first test the \texttt{PINQAgent} for whether they may perform the operation by passing it the $\epsilon$ value of the operation.
+Transformations produce a new \texttt{PINQueryable} instance with a transformed \texttt{IQueryable} and a new \texttt{PINQAgent}.
+These new \texttt{PINQAgent} instances retain a reference to the agent of their origin \texttt{IQueryable} and if queried for whether they permit an operation, they multiply the operation's epsilon with the stability of the appropriate transformation and forward the request with the new $\epsilon$ value to the origin's agent.
+Thereby, \gls[]{pinq} enforces propagation of the \enquote{cost} of a query as well as of the responsibility for permitting it back to the original data source(s).
+\parencite[]{mcsherry_privacy_2009}
+
+\begin{wrapfigure}{l}{0.6\textwidth}
   \centering
-  \includegraphics[width=0.35\textwidth]{threepwood.png}
-  \caption{The Greatest Pirate in the World}\label{fig:threepwood}
+  \includegraphics[width=0.55\textwidth]{example.drawio.png}
+  \\\emph{Source}: \cite[]{mcsherry_privacy_2009}
+  \caption{An example query structure linked via \texttt{PINQAgent}}\label{fig:example}
 \end{wrapfigure}
 
-\blindtext[2]
+Figure \ref{fig:example} shows an example structure of \texttt{PINQueryable} instances interlinked via their \texttt{PINQAgent}s (boxes with \enquote{A}) as might be produced with a moderately complex query.
+This structure and the recursive \enquote{cost} calculation and authorization that it facilitates are an important feature of \gls[]{pinq}, because it informs the providers of the original data about the privacy implications of the queries that users run against them, as well as empowering them to accept or deny specific queries.
+\parencite[]{mcsherry_privacy_2009}
+
+Since \texttt{PINQAgent} is an extensible interface, data providers could implement their own custom logic for accepting and denying queries.
+A simple implementation of the interface may be instantiated with a certain budget.
+It would deny queries whose $\epsilon$ exceeds the budget and subtract the epsilon values of queries that it permits from the budget until it is exhausted. 
+\parencite[]{mcsherry_privacy_2009}
+
+Furthermore, they can offer different \texttt{PINQueryable} instances for different roles of users.
+For example, if a data provider facilitates both access to internal and external analysts, they may offer the internal ones a \texttt{PINQueryable} instance with an \texttt{PINQAgent} that accepts all queries but logs them to some persistence, while for the external analysts a budget is enforced.
+This flexibility and extensibility is another advantage of \gls[]{pinq}.
+\parencite[]{mcsherry_privacy_2009}
+
+\section{Context}
+
+\citetitle{mcsherry_privacy_2009} can be considered a seminal work in the field of differential privacy with Google Scholar showing 1550 other works that reference it.\footnote{\href{https://scholar.google.com/scholar?q=mcsherry+privacy+integrated+queries}{scholar.google.com}}
+It is referenced in multiple surveys in the field of differential privacy \parencites{dwork_differential_2008}{hassan_differential_2019}{xiao_edge_2019}, as well as in a book on the mathematical basis of differential privacy \parencite[]{dwork_algorithmic_2014}.
+While the paper itself heavily leans on the two foundational papers for differential privacy \cite[]{dwork_calibrating_2006} and \cite[]{dwork_differential_2006}, its other references mostly serve to differentiate from other works in the field.
+
+\section{Conclusion}
+
+The author shows a practical application of differential privacy to data analysis by designing and implementing a concise framework for a common, high-level programming language.
+The goal of providing a generic foundation for privacy-preserving data analysis instead of complicated ad-hoc solutions to specific problems is commendable.
+As is the focus on making privacy easy to implement for non-experts while empowering data providers.
+Differential privacy and frameworks that make it easy to implement could, for example, play an important role in providing access to sensitive data for research purposes.
+
+The electronic patient's record which is currently heavily debated in Germany is among other things also supposed to provide health data for research purposes.
+To maintain the data owners' privacy, the data is supposed to be pseudonymised, which has drawbacks for the data analysis and might not prevent data leaks. \parencite[]{tagesschaude_gesundheitswesen_nodate}
+Differential privacy could be a useful alternative here, to provide access to raw data with manageable privacy implications.
