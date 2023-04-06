@@ -1,0 +1,12 @@
+%!TeX root=../../index.tex
+
+%  make \paragraph and \subparagraph behave like small headings
+\RedeclareSectionCommands[
+    beforeskip=-1sp,
+    afterskip=1sp,
+    %indent=0pt
+]{paragraph,subparagraph}
+
+% Use numbers also for level 1 nested enumerations
+\renewcommand{\labelenumii}{\theenumii}
+\renewcommand{\theenumii}{\theenumi.\arabic{enumii}.}

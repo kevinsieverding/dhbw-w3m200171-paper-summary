@@ -1,0 +1,24 @@
+{
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk",
+      "command": "latexmk",
+      "args": [
+        "-shell-escape",
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-pdf",
+        "-outdir=%OUTDIR%",
+        "%DOC%"
+      ],
+      "env": {}
+    },
+  ],
+  "latex-workshop.latex.autoClean.run": "onBuilt",
+  "cSpell.words": [
+  ],
+  "editor.wordWrap": "bounded",
+  "editor.wordWrapColumn": 110,
+  "cSpell.language": "en,de-DE"
+}

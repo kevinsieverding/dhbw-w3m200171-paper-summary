@@ -1,0 +1,23 @@
+name: Build and Release
+on:
+  push:
+    tags:
+      - "*.*"
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: compile
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: index.tex
+          latexmk_shell_escape: true
+
+      - name: release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: index.pdf

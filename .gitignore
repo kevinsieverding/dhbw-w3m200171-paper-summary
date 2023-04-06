@@ -1,0 +1,26 @@
+# MacOS
+.DS_Store
+
+# LaTeX
+__*
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.lof
+*.lot
+*.lol
+*.out
+*.aux
+*.run.xml
+*.bcf
+*.toc
+*.aux
+*.synctex*
+*.bbl
+*.blg
+_minted-index
+
+# Local Output
+*.pdf
+!assets/img/*.pdf

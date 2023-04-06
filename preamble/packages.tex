@@ -1,0 +1,90 @@
+%!TeX root = ../index.tex
+
+% BASICS
+
+% make 3rd party packages behave well with scrartcl
+\usepackage{scrhack}
+
+% simple arithmetics
+\usepackage{calc}
+
+% language support
+\usepackage[american]{babel}
+
+% advanced support for quotations
+\usepackage[
+  autostyle % adapt quote style to document language
+]{csquotes}
+
+% color support
+\usepackage[dvipsnames,table,hyperref,fixinclude]{xcolor}
+
+% graphics support
+\usepackage[]{graphicx}
+
+% extend file name support for graphicx package
+\usepackage[
+  extendedchars,
+  encoding,
+  multidot,
+  space,
+  filenameencoding=utf8,
+]{grffile}
+
+% hyperlink support
+\usepackage[
+  breaklinks,
+  pdfusetitle
+]{hyperref}
+
+% bibliography support
+\usepackage[
+  backend=biber,
+  style=authoryear,
+  labeldate=year,
+  sortcites=true,
+  sorting=nyt,
+  block=space,
+  maxnames=2,
+  minnames=1
+]{biblatex}
+
+% glossaries and acronyms
+\usepackage[
+    acronym,
+    toc=true,
+]{glossaries}
+
+% FORMATTING
+
+% micro-typography support (makes most fonts look a little nicer)
+\usepackage{microtype}
+
+% support for controlling line spacing
+\usepackage{setspace}
+
+% format captions
+\usepackage[font=small,labelfont=bf]{caption}
+
+% easily control widow and club penalties
+\usepackage[
+  defaultlines=4, % keep at least x lines before/after a page break
+  all, % apply to whole document
+]{nowidow}
+
+% customize list environments
+\usepackage{enumitem}
+
+% support for code listings
+\usepackage{minted}
+
+% wrapt text around figures
+\usepackage{wrapfig}
+
+% MISC
+
+% useful blindtext in document language
+\usepackage{blindtext}
+
+% support for placing todo notes in margins
+\usepackage[obeyFinal,color=Red,textsize=tiny]{todonotes}

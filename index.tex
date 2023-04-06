@@ -1,0 +1,159 @@
+\documentclass[
+  paper=a4,
+  parskip=half,
+  fontsize=12pt,
+  listof=toc,
+  titlepage,
+  headsepline,
+  footsepline,
+]{scrartcl}
+
+% enable UTF-8 text input
+\usepackage[utf8]{inputenc}
+
+% DOCUMENT METADATA
+
+\author{Guybrush Threepwood}
+\title{Seasonality of Leather Jacket Demand}
+\subject{Market Report}
+
+% PREAMBLE
+
+\input{preamble/packages.tex}
+
+\input{preamble/style/layout.tex}
+\input{preamble/style/header-footer.tex}
+\input{preamble/style/style.tex}
+\input{preamble/style/fonts.tex}
+\input{preamble/style/listings.tex}
+
+% setup hyperref after all packages have been loaded
+\hypersetup{
+  colorlinks=true,
+  allcolors=black,
+}
+
+% setup acronyms
+\input{preamble/acronyms.tex}
+
+\makenoidxglossaries{}
+
+% setup bibliography
+\addbibresource{assets/bibliography.bib}
+
+% set base path for graphics
+\graphicspath{{assets/img}}
+
+% DOCUMENT
+
+\begin{document}
+
+% FRONTMATTER
+
+\maketitle
+
+\clearpage
+
+% use roman page numerals to number frontmatter pages
+\pagenumbering{Roman}
+
+% use plain headers
+\pagestyle{plain.scrheadings}
+
+% start numbering pages at 2, to include cover page
+\setcounter{page}{2}
+
+% use single line spacing to make lists more compact
+\singlespacing
+
+\tableofcontents
+
+\clearpage
+
+\listoffigures
+
+\clearpage
+
+% use to change the title of the list of listings
+% \renewcommand{\listoflistingscaption}{Quellcodeverzeichnis}
+\listoflistings
+
+\clearpage
+
+\setlist[description]{leftmargin=!, labelwidth=4em}
+
+\printnoidxglossary[
+    type=\acronymtype,
+    sort=nocase,
+    nogroupskip,
+    nopostdot,
+    nonumberlist
+]
+
+\setlist[description]{style=standard}
+
+\newcounter{frontpagecount}
+\addtocounter{frontpagecount}{\value{page}}
+
+\clearpage
+
+% CONTENT
+
+% use arabic numerals for numbering content pages
+\pagenumbering{arabic}
+
+% use the default header style
+\pagestyle{scrheadings}
+
+% count content pages from 1
+\setcounter{page}{1}
+
+% MS Word does line spacing wrong.
+% To get true one-half spacing use '\onehalfspacing'.
+% To get something similar to MS Word, use '\setstretch{1.5}'.
+\setstretch{1.5}
+
+\input{content/content.tex}
+
+% BACKMATTER
+
+\clearpage
+
+% use roman numerals to number backmatter pages
+\pagenumbering{Roman}
+
+% use plain headers for backmatter pages
+\pagestyle{plain.scrheadings}
+
+% start numbering backmatter pages from 1
+\setcounter{page}{\value{frontpagecount}}
+
+% \pagestyle{empty}
+
+% {
+%   \centering\Huge\mbox{}
+%   \vfill{}
+%   Appendix\\
+%   \vfill{}
+% }
+
+% \clearpage
+
+\pagestyle{plain.scrheadings}
+
+\appendix
+
+% insert appendix sections here
+
+\clearpage
+
+% print bibliography in sloppypar environment for better URL placement
+\begin{sloppypar}
+  \printbibliography[
+    heading=bibintoc % include bibliography in table of contents
+  ]{}
+\end{sloppypar}
+
+\clearpage
+
+\end{document}
