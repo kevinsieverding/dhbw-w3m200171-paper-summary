@@ -7,6 +7,12 @@ Their design provides an SQL-like query language and leverages differential priv
 \gls[]{pinq} is implemented as a wrapper around \gls[]{linq}---a declarative, SQL-like query language integrated into the C\# programming language.
 \parencite[][]{mcsherry_privacy_2009}
 
+\section{Context}
+
+\citetitle{mcsherry_privacy_2009} can be considered a seminal work in the field of differential privacy with Google Scholar showing 1550 other works that reference it.\footnote{\href{https://scholar.google.com/scholar?q=mcsherry+privacy+integrated+queries}{scholar.google.com}}
+It is referenced in multiple surveys in the field of differential privacy \parencites{dwork_differential_2008}{hassan_differential_2019}{xiao_edge_2019}, as well as in a book on the mathematical basis of differential privacy \parencite[]{dwork_algorithmic_2014}.
+While the paper itself heavily leans on the two foundational papers for differential privacy \cite[]{dwork_calibrating_2006} and \cite[]{dwork_differential_2006}, its other references mostly serve to differentiate from other works in the field.
+
 \section{Differential Privacy}
 
 Differential privacy forms the theoretical foundation for \gls[]{pinq}.
@@ -74,12 +80,6 @@ Furthermore, they can offer different \texttt{PINQueryable} instances for differ
 For example, if a data provider facilitates both access to internal and external analysts, they may offer the internal ones a \texttt{PINQueryable} instance with an \texttt{PINQAgent} that accepts all queries but logs them to some persistence, while for the external analysts a budget is enforced.
 This flexibility and extensibility is another advantage of \gls[]{pinq}.
 \parencite[]{mcsherry_privacy_2009}
-
-\section{Context}
-
-\citetitle{mcsherry_privacy_2009} can be considered a seminal work in the field of differential privacy with Google Scholar showing 1550 other works that reference it.\footnote{\href{https://scholar.google.com/scholar?q=mcsherry+privacy+integrated+queries}{scholar.google.com}}
-It is referenced in multiple surveys in the field of differential privacy \parencites{dwork_differential_2008}{hassan_differential_2019}{xiao_edge_2019}, as well as in a book on the mathematical basis of differential privacy \parencite[]{dwork_algorithmic_2014}.
-While the paper itself heavily leans on the two foundational papers for differential privacy \cite[]{dwork_calibrating_2006} and \cite[]{dwork_differential_2006}, its other references mostly serve to differentiate from other works in the field.
 
 \section{Conclusion}
 
